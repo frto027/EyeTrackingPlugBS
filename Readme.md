@@ -6,7 +6,7 @@ This mod aims record and display the eye tracking information in the beatleader 
 
 Maybe it will not work. Just an idea fram the unreleased steam frame. Let's code first for fun.
 
-- [ ] Get Eye tracking data from Unity runtime.
+- [x] Get Eye tracking data from Unity runtime.
 - [ ] Record the data to Beatleader's record file.
 - [ ] Buy a headset that supports eye tracking???
 - [ ] Release the first version of this mod.
