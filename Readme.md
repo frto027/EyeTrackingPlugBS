@@ -30,10 +30,8 @@ version                 - int, always 1
 count                   - int
 {                       - repeat count times
     time                - float, timestamp
-    confL               - float, confidence of left eye
     {x, y, z}           - 3 float, eye position left
     {x,y,z,w}           - 4 float, eye rotation left
-    confR               - float, confidence of right eye
     {x, y, z}           - 3 float, eye position right
     {x,y,z,w}           - 4 float, eye rotation right
 }
@@ -41,13 +39,6 @@ count                   - int
 - most readers don't need the following data
 
 etAgent                 - string(length + bytes), the mod ID and version number information
-
-eyeCloseCount           - int
-{                       - repeat eyeCloseCount times
-    time                - float, timestamp
-    leftClose           - float
-    rightClose          - float
-}
 ```
 
 Always skip `eventArgSize` bytes, even if it is something like `leftEyeClose` which have no args defined.
