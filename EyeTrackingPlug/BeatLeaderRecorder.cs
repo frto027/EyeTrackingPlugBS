@@ -40,11 +40,11 @@ public class BeatLeaderRecorder : ITickable, IInitializable, IDisposable
         _recorder?.OnFinalizeReplay += OnFinalizeReplay;
         
         Plugin.Log.Info($"Initializing BeatLeaderRecorder, _recordEnabled: {_recordEnabled}");
-
     }
+    
+    // FIXME: Dispose maybe called before OnFinalizeReplay is called. It's not happening. More test needed.
     public void Dispose()
     {
-        Plugin.Log.Debug("Disposing Eye DataProvider");
         _recorder?.OnFinalizeReplay -= OnFinalizeReplay;
     }
 
