@@ -18,14 +18,13 @@ public class ReplayDataParseException : Exception
     {
     }
 }
-
 public class ReplayDataProvider:IEyeDataProvider, IInitializable, IDisposable
 {
     [Inject]
     private AudioTimeSyncController _audioTimeSyncController = null!;
 
     [Inject]
-    private RecordOrUnityDataProvider _recordOrUnityDataProvider = null!;
+    private ReplayOrUnityDataProvider _replayOrUnityDataProvider = null!;
     
     
     private ReplayData[]? _datas;
@@ -35,8 +34,8 @@ public class ReplayDataProvider:IEyeDataProvider, IInitializable, IDisposable
     {
         try
         {
-            if(_recordOrUnityDataProvider.replayDataBytes != null)
-                ParseData(_recordOrUnityDataProvider.replayDataBytes);
+            if(_replayOrUnityDataProvider.replayDataBytes != null)
+                ParseData(_replayOrUnityDataProvider.replayDataBytes);
         }
         catch (Exception e)
         {
@@ -148,12 +147,12 @@ public class ReplayDataProvider:IEyeDataProvider, IInitializable, IDisposable
     {
         Plugin.Log.Debug("Replay Data Provider Initialized");
         LoadData();
-        _recordOrUnityDataProvider.replayProvider = this;
+        _replayOrUnityDataProvider.replayProvider = this;
     }
 
     public void Dispose()
     {
         Plugin.Log.Debug("Replay Data Provider Disposed");
-        _recordOrUnityDataProvider.replayProvider = null;
+        _replayOrUnityDataProvider.replayProvider = null;
     }
 }

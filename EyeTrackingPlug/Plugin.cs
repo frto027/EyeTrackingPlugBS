@@ -4,6 +4,7 @@ using EyeTrackingPlug.DataProvider;
 using IPA;
 using IPA.Loader;
 using IPA.Utilities;
+using JetBrains.Annotations;
 using SiraUtil.Zenject;
 using UnityEngine.XR.OpenXR;
 using UnityEngine.XR.OpenXR.Features.Interactions;
@@ -17,6 +18,7 @@ internal class Plugin
     internal static IpaLogger Log { get; private set; } = null!;
 
     public static string EtAgent = "";
+    
     
     [Init]
     public Plugin(Zenjector zenjector, IpaLogger ipaLogger, PluginMetadata pluginMetadata)

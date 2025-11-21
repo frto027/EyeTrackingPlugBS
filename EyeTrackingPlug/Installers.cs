@@ -19,8 +19,8 @@ public class AppInstaller : Installer<AppInstaller>
         // the seconed is RecordOrUnityDataProvider, which reads eye tracking data not only fron unity, but also the replay file of beatleader.
         if (PluginManager.IsEnabled(PluginManager.GetPluginFromId("BeatLeader")))
         {
-            Container.Bind(typeof(RecordOrUnityDataProvider), typeof(IInitializable), typeof(IDisposable))
-                .To<RecordOrUnityDataProvider>().AsSingle();
+            Container.Bind(typeof(ReplayOrUnityDataProvider), typeof(IInitializable), typeof(IDisposable))
+                .To<ReplayOrUnityDataProvider>().AsSingle();
             Plugin.Log.Info("Beatleader detected, install RecordOrUnityDataProvider.");
         }
         else

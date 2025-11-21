@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using JetBrains.Annotations;
 using SiraUtil.Zenject;
 using UnityEngine;
 using UnityEngine.XR;
@@ -10,7 +11,8 @@ namespace EyeTrackingPlug.DataProvider;
 
 public class UnityEyeDataProvider: IEyeDataProvider, IInitializable, IDisposable
 {
-    public static UnityEyeDataProvider Instance { get; private set; } = null!;
+    [PublicAPI]
+    public static IEyeDataProvider? Instance { get; private set; }
     
     private List<InputDevice> _devices = new List<InputDevice>();
     

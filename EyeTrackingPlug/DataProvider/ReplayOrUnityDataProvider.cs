@@ -2,19 +2,23 @@
 using BeatLeader.Models;
 using BeatLeader.Replayer;
 using IPA.Loader;
+using JetBrains.Annotations;
 using Zenject;
 
 namespace EyeTrackingPlug.DataProvider;
 
-public class RecordOrUnityDataProvider:IEyeDataProvider, IInitializable, IDisposable
+public class ReplayOrUnityDataProvider: IEyeDataProvider, IInitializable, IDisposable
 {
-    public static RecordOrUnityDataProvider Instance { get; private set; } = null!;
+    [PublicAPI]
+    public static IEyeDataProvider? Instance { get; private set; } = null!;
+    
     [Inject]
     UnityEyeDataProvider _eyeDataProvider = null!;
 
     public ReplayDataProvider? replayProvider = null;
 
     public byte[]? replayDataBytes = null;
+    
     public bool GetData(out EyeTrackingData data)
     {
         if(replayProvider != null && replayProvider.HasData())
