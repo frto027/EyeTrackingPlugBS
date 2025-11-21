@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using EyeTrackingPlug.DataProvider;
 using IPA;
 using IPA.Loader;
 using IPA.Utilities;
@@ -23,11 +24,13 @@ internal class Plugin
         
         OpenXRRestarter.Instance.onAfterShutdown += EyeGazeEnabler;
         zenjector.UseLogger(ipaLogger);
-        zenjector.Install<RecorderInstaller>(Location.GameCore);
-        if (PluginManager.IsEnabled(PluginManager.GetPluginFromId("BeatLeader")))
-            zenjector.Install<BeatLeaderProxyInstaller>(Location.GameCore);
+
+        zenjector.Install<UnityEyeDataProviderInstaller>(Location.App);
+        zenjector.Install<RecordOrUnityDataProviderInstaller>(Location.App);
         
-        EtAgent = pluginMetadata.Name + "/" + pluginMetadata.HVersion;
+        zenjector.Install<ReplayDataProviderInstaller>(Location.Player);
+        
+        EtAgent = $"{pluginMetadata.Name}/{pluginMetadata.HVersion} ({OpenXRRuntime.LibraryName},{OpenXRRuntime.name}/{OpenXRRuntime.version}/{OpenXRRuntime.pluginVersion}/{OpenXRRuntime.apiVersion})";
         
         Log.Info($"{pluginMetadata.Name} {pluginMetadata.HVersion} initialized, etAgent: {EtAgent}");
     }
