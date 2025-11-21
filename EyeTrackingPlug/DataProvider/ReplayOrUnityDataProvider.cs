@@ -4,30 +4,19 @@ using Zenject;
 
 namespace EyeTrackingPlug.DataProvider;
 
-public class ReplayOrUnityDataProvider: IEyeDataProvider, IInitializable, IDisposable
+public class ReplayOrUnityDataProvider: IEyeDataProvider
 {
-    public static IEyeDataProvider? Instance { get; private set; } = null!;
-    
     [Inject]
-    UnityEyeDataProvider _eyeDataProvider = null!;
+    internal UnityEyeDataProvider _eyeDataProvider = null!;
 
-    public BeatLeaderReplayDataProvider? replayProvider = null;
+    public BeatLeaderReplayDataProvider? blReplayProvider = null;
     
+    [PublicAPI]
+    public bool IsReplayData => blReplayProvider != null && blReplayProvider.HasData();
     public bool GetData(out EyeTrackingData data)
     {
-        if(replayProvider != null && replayProvider.HasData())
-            return replayProvider.GetData(out data);
+        if(blReplayProvider != null && blReplayProvider.HasData())
+            return blReplayProvider.GetData(out data);
         return _eyeDataProvider.GetData(out data);
     }
-
-    public void Initialize()
-    {
-        Instance = this;
-    }
-
-    public void Dispose()
-    {
-        Instance = null!;
-    }
-
 }

@@ -13,12 +13,10 @@ public class AppInstaller : Installer<AppInstaller>
         
         // the first is UnityEyeDataProvider, which reads eye tracking data from unity directly.
         // use this if you want to interact with game UI.
-        Container.Bind(typeof(UnityEyeDataProvider), typeof(IInitializable), typeof(IDisposable))
-            .To(typeof(UnityEyeDataProvider)).AsSingle();
+        Container.BindInterfacesAndSelfTo<UnityEyeDataProvider>().AsSingle();
         
         // the seconed is RecordOrUnityDataProvider, which reads eye tracking data not only fron unity, but also the replay file of beatleader.
-        Container.Bind(typeof(ReplayOrUnityDataProvider), typeof(IInitializable), typeof(IDisposable))
-            .To<ReplayOrUnityDataProvider>().AsSingle();
+        Container.BindInterfacesAndSelfTo<ReplayOrUnityDataProvider>().AsSingle();
     }
 }
 
@@ -26,16 +24,18 @@ public class SinglePlayerInstaller : Installer<SinglePlayerInstaller>
 {
     public override void InstallBindings()
     {
-        if (PluginManager.IsEnabled(PluginManager.GetPluginFromId("BeatLeader")))
+        if (Plugin.BeatLeaderEnabled)
         {
-            Plugin.Log.Info("Beatleader detected, installing BeatLeaderReplayDataProvider.");
-            Container.Bind(typeof(BeatLeaderReplayDataProvider), typeof(IInitializable), typeof(IDisposable))
-                .To<BeatLeaderReplayDataProvider>().AsSingle();
+            BeatLeaderReplayDataProvider.StaticInit();
+            
+            Container
+                .BindInterfacesAndSelfTo<BeatLeaderReplayDataProvider>()
+                .AsSingle();
+
+            Container
+                .BindInterfacesAndSelfTo<BeatLeaderRecorder>()
+                .AsSingle();
         }
-        else
-        {
-            Plugin.Log.Info("Beatleader not detected, don't install BeatLeaderReplayDataProvider.");
-        }
-        
+
     }
 }

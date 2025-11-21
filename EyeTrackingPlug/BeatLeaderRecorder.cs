@@ -8,29 +8,7 @@ using IPA.Loader;
 using SiraUtil.Zenject;
 using Zenject;
 
-namespace EyeTrackingPlug.BeatLeaderRecorder;
-
-public class BeatLeaderRecorderInstaller : Installer
-{
-    public static void PluginInit(Zenjector zenjector)
-    {
-        if (PluginManager.IsEnabled(PluginManager.GetPluginFromId("BeatLeader")))
-        {
-            zenjector.Install<BeatLeaderRecorderInstaller>(Location.Singleplayer);
-            Plugin.Log.Info("BeatLeaderRecorder installed");
-        }
-        else
-        {
-            Plugin.Log.Info("BeatLeader is not detected. Recorder not enabled.");
-        }
-    }
-    public override void InstallBindings()
-    {
-        Container.Bind(typeof(BeatLeaderRecorder), typeof(ITickable), typeof(IInitializable), typeof(IDisposable))
-            .To<BeatLeaderRecorder>().AsSingle();
-    }
-
-}
+namespace EyeTrackingPlug;
 
 struct RecordedEyeTrackingData
 {

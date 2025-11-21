@@ -22,12 +22,15 @@ public class ReplayDataParseException : Exception
 }
 public class BeatLeaderReplayDataProvider:IEyeDataProvider, IInitializable, IDisposable
 {
-    private static byte[]? _replayDataBytes;
-    
+    // We use a static instance because beatleader provided api based on static things.
+    private static bool _isInitialized = false;
     private static BeatLeaderReplayDataProvider? _instance;
-    
+    private static byte[]? _replayDataBytes;
     public static void StaticInit()
     {
+        if (!_isInitialized)
+            return;
+        _isInitialized = true;
         ReplayerLauncher.ReplayWasStartedEvent += (ReplayLaunchData replayData) =>
         {
             if (replayData.MainReplay.CustomData.TryGetValue("EyeTrackingP", out var data))
@@ -171,13 +174,13 @@ public class BeatLeaderReplayDataProvider:IEyeDataProvider, IInitializable, IDis
     public void Initialize()
     {
         LoadData();
-        _replayOrUnityDataProvider.replayProvider = this;
+        _replayOrUnityDataProvider.blReplayProvider = this;
         _instance = this;
     }
 
     public void Dispose()
     {
-        _replayOrUnityDataProvider.replayProvider = null;
+        _replayOrUnityDataProvider.blReplayProvider = null;
         _instance = null;
     }
 }

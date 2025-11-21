@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using JetBrains.Annotations;
-using SiraUtil.Zenject;
 using UnityEngine;
 using UnityEngine.XR;
 using Zenject;
@@ -11,8 +9,6 @@ namespace EyeTrackingPlug.DataProvider;
 
 public class UnityEyeDataProvider: IEyeDataProvider, IInitializable, IDisposable
 {
-    public static IEyeDataProvider? Instance { get; private set; }
-    
     private List<InputDevice> _devices = new List<InputDevice>();
     
     private void FlushDev()
@@ -27,7 +23,6 @@ public class UnityEyeDataProvider: IEyeDataProvider, IInitializable, IDisposable
     
     public void Initialize()
     {
-        Instance = this;
         FlushDev();
         InputDevices.deviceConfigChanged +=FlushDev;
         InputDevices.deviceConnected += FlushDev;
@@ -36,7 +31,6 @@ public class UnityEyeDataProvider: IEyeDataProvider, IInitializable, IDisposable
 
     public void Dispose()
     {
-        Instance = null!;
         InputDevices.deviceConfigChanged -= FlushDev;
         InputDevices.deviceConnected -= FlushDev;
         InputDevices.deviceDisconnected -= FlushDev;
