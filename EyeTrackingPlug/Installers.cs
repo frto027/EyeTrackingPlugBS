@@ -17,16 +17,8 @@ public class AppInstaller : Installer<AppInstaller>
             .To(typeof(UnityEyeDataProvider)).AsSingle();
         
         // the seconed is RecordOrUnityDataProvider, which reads eye tracking data not only fron unity, but also the replay file of beatleader.
-        if (PluginManager.IsEnabled(PluginManager.GetPluginFromId("BeatLeader")))
-        {
-            Container.Bind(typeof(ReplayOrUnityDataProvider), typeof(IInitializable), typeof(IDisposable))
-                .To<ReplayOrUnityDataProvider>().AsSingle();
-            Plugin.Log.Info("Beatleader detected, install RecordOrUnityDataProvider.");
-        }
-        else
-        {
-            Plugin.Log.Info("Beatleader not detected, RecordOrUnityDataProvider is not installed.");
-        }
+        Container.Bind(typeof(ReplayOrUnityDataProvider), typeof(IInitializable), typeof(IDisposable))
+            .To<ReplayOrUnityDataProvider>().AsSingle();
     }
 }
 
@@ -34,11 +26,15 @@ public class SinglePlayerInstaller : Installer<SinglePlayerInstaller>
 {
     public override void InstallBindings()
     {
-        // ReplayDataProvider
         if (PluginManager.IsEnabled(PluginManager.GetPluginFromId("BeatLeader")))
         {
-            Container.Bind(typeof(ReplayDataProvider), typeof(IInitializable), typeof(IDisposable))
-                .To<ReplayDataProvider>().AsSingle();
+            Plugin.Log.Info("Beatleader detected, installing BeatLeaderReplayDataProvider.");
+            Container.Bind(typeof(BeatLeaderReplayDataProvider), typeof(IInitializable), typeof(IDisposable))
+                .To<BeatLeaderReplayDataProvider>().AsSingle();
+        }
+        else
+        {
+            Plugin.Log.Info("Beatleader not detected, don't install BeatLeaderReplayDataProvider.");
         }
         
     }

@@ -11,7 +11,6 @@ namespace EyeTrackingPlug.DataProvider;
 
 public class UnityEyeDataProvider: IEyeDataProvider, IInitializable, IDisposable
 {
-    [PublicAPI]
     public static IEyeDataProvider? Instance { get; private set; }
     
     private List<InputDevice> _devices = new List<InputDevice>();

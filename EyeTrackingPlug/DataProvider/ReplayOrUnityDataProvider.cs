@@ -1,7 +1,4 @@
 ﻿using System;
-using BeatLeader.Models;
-using BeatLeader.Replayer;
-using IPA.Loader;
 using JetBrains.Annotations;
 using Zenject;
 
@@ -9,15 +6,12 @@ namespace EyeTrackingPlug.DataProvider;
 
 public class ReplayOrUnityDataProvider: IEyeDataProvider, IInitializable, IDisposable
 {
-    [PublicAPI]
     public static IEyeDataProvider? Instance { get; private set; } = null!;
     
     [Inject]
     UnityEyeDataProvider _eyeDataProvider = null!;
 
-    public ReplayDataProvider? replayProvider = null;
-
-    public byte[]? replayDataBytes = null;
+    public BeatLeaderReplayDataProvider? replayProvider = null;
     
     public bool GetData(out EyeTrackingData data)
     {
@@ -29,8 +23,6 @@ public class ReplayOrUnityDataProvider: IEyeDataProvider, IInitializable, IDispo
     public void Initialize()
     {
         Instance = this;
-        if (PluginManager.IsEnabled(PluginManager.GetPluginFromId("BeatLeader")))
-            InitBeatLeader();
     }
 
     public void Dispose()
@@ -38,23 +30,4 @@ public class ReplayOrUnityDataProvider: IEyeDataProvider, IInitializable, IDispo
         Instance = null!;
     }
 
-    private void InitBeatLeader()
-    {
-        ReplayerLauncher.ReplayWasStartedEvent += (ReplayLaunchData replayData) =>
-        {
-            if (replayData.MainReplay.CustomData.TryGetValue("EyeTrackingP", out var data))
-            {
-                if (data != null)
-                    replayDataBytes = data;
-                replayProvider?.LoadData();
-            }
-        };
-
-        ReplayerLauncher.ReplayWasFinishedEvent += data =>
-        {
-            replayDataBytes = null;
-            replayProvider?.DropData();
-        };
-
-    }
 }

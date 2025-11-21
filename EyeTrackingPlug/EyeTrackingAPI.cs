@@ -7,7 +7,7 @@ namespace EyeTrackingPlug;
 public class EyeTrackingAPI
 {
     [PublicAPI]
-    public static IEyeDataProvider? ReplayableDataProvider => ReplayOrUnityDataProvider.Instance ?? UnityEyeDataProvider.Instance;
+    public static IEyeDataProvider? ReplayableDataProvider => ReplayOrUnityDataProvider.Instance;
     
     [PublicAPI]
     public static IEyeDataProvider? RawDataProvider => UnityEyeDataProvider.Instance;

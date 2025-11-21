@@ -1,5 +1,7 @@
 ﻿using System;
 using System.IO;
+using BeatLeader.Models;
+using BeatLeader.Replayer;
 using UnityEngine;
 using Zenject;
 
@@ -18,8 +20,32 @@ public class ReplayDataParseException : Exception
     {
     }
 }
-public class ReplayDataProvider:IEyeDataProvider, IInitializable, IDisposable
+public class BeatLeaderReplayDataProvider:IEyeDataProvider, IInitializable, IDisposable
 {
+    private static byte[]? _replayDataBytes;
+    
+    private static BeatLeaderReplayDataProvider? _instance;
+    
+    public static void StaticInit()
+    {
+        ReplayerLauncher.ReplayWasStartedEvent += (ReplayLaunchData replayData) =>
+        {
+            if (replayData.MainReplay.CustomData.TryGetValue("EyeTrackingP", out var data))
+            {
+                if (data != null)
+                    _replayDataBytes = data;
+                _instance?.LoadData();
+            }
+        };
+
+        ReplayerLauncher.ReplayWasFinishedEvent += data =>
+        {
+            _replayDataBytes = null;
+            _instance?.DropData();
+        };
+    }
+    
+    
     [Inject]
     private AudioTimeSyncController _audioTimeSyncController = null!;
 
@@ -29,13 +55,12 @@ public class ReplayDataProvider:IEyeDataProvider, IInitializable, IDisposable
     
     private ReplayData[]? _datas;
     
-    
     public void LoadData()
     {
         try
         {
-            if(_replayOrUnityDataProvider.replayDataBytes != null)
-                ParseData(_replayOrUnityDataProvider.replayDataBytes);
+            if(_replayDataBytes != null)
+                ParseData(_replayDataBytes);
         }
         catch (Exception e)
         {
@@ -147,10 +172,12 @@ public class ReplayDataProvider:IEyeDataProvider, IInitializable, IDisposable
     {
         LoadData();
         _replayOrUnityDataProvider.replayProvider = this;
+        _instance = this;
     }
 
     public void Dispose()
     {
         _replayOrUnityDataProvider.replayProvider = null;
+        _instance = null;
     }
 }
