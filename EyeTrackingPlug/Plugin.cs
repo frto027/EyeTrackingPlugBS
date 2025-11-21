@@ -23,6 +23,9 @@ internal class Plugin
         Log = ipaLogger;
         
         OpenXRRestarter.Instance.onAfterShutdown += EyeGazeEnabler;
+        // Do not restart OpenXR immediately. I don't want to be too aggressive, even with the default 5-second delay before restarting.
+        // If other mods also require a restart, then why not do them together later?
+        
         zenjector.UseLogger(ipaLogger);
 
         zenjector.Install<UnityEyeDataProviderInstaller>(Location.App);
