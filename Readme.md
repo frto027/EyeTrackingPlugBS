@@ -19,6 +19,16 @@ Maybe it will not work. Just an idea fram the unreleased steam frame. Let's code
 - [ ] Ask someone using Meta Quest Pro to make sure it works.
 - [ ] Release the quest mod.
 
+
+## Pickup a mod name
+
+- [ ] EyeTrackingPlug
+- [ ] EyeTrackingPlus
+- [ ] BeatEyes
+- [ ] Now with Eyes
+- [ ] Eye-Tracking Enabled
+- [ ] EyeViz👀
+
 # Record Format
 
 WIP.
