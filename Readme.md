@@ -68,7 +68,6 @@ class YourClass
     [Inject]
     private readonly ReplayOrRawEyeDataProvider _replayOrRawEyeDataProvider;
 }
-
 ```
 
 `IEyeDataProvider` returns the raw data from the player selected data source.
