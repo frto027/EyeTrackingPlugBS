@@ -12,10 +12,12 @@ public class EyeDataManager : IInitializable
     
     private ReplayOrRealtimeEyeDataProvider _replayOrRealtimeEyeDataProvider = null!;
     public ReplayOrRealtimeEyeDataProvider ReplayOrRealtimeEyeDataProvider => _replayOrRealtimeEyeDataProvider;
-    
+
+    public static EyeDataManager Instance = null!;
 
     public void Initialize()
     {
+        Instance = this;
         ReplaceRealtimeEyeDataProvider(new UnityEyeDataProvider());
         _replayOrRealtimeEyeDataProvider = new ReplayOrRealtimeEyeDataProvider(this);
     }
