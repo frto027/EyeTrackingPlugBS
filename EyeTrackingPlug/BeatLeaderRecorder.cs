@@ -8,9 +8,9 @@ using IPA.Loader;
 using SiraUtil.Zenject;
 using Zenject;
 
-namespace EyeTrackingPlug;
+namespace EyeTrackingPlug.BeatLeaderRecorder;
 
-struct RecordedEyeTrackingData
+public struct RecordedEyeTrackingData
 {
     public float SongTime;
     public EyeTrackingData EyeTrackingData;
@@ -21,21 +21,30 @@ public class BeatLeaderRecorder : ITickable, IInitializable, IDisposable
     [InjectOptional]
     private readonly ReplayRecorder? _recorder = null!;
 
-    [Inject]
-    private readonly UnityEyeDataProvider _eyeDataProvider = null!;
+    [Inject] 
+    private readonly EyeDataManager _eyeDataManager = null!;
+    
+    private IEyeDataProvider? _realtimeEyeDataProvider;
     
     [Inject]
     private readonly AudioTimeSyncController _audioTimeSyncController = null!;
     
     private bool _recordEnabled = false;
     
-    private readonly List<RecordedEyeTrackingData> _records = new List<RecordedEyeTrackingData>();
+    public readonly List<RecordedEyeTrackingData> _records = new List<RecordedEyeTrackingData>();
 
+    private void OnRealtimeDataProviderChanged(IEyeDataProvider provider)
+    {
+        _realtimeEyeDataProvider = provider;
+    }
+    
     public void Initialize()
     {
         // The beatleader will not install the recorder if beatleader or scoresaber is in replay mode.
         _recordEnabled = _recorder != null;
-        
+
+        _realtimeEyeDataProvider = _eyeDataManager.RealtimeProvider;
+        _eyeDataManager.OnRealtimeProviderChanged += OnRealtimeDataProviderChanged;
         
         _recorder?.OnFinalizeReplay += OnFinalizeReplay;
         
@@ -46,6 +55,7 @@ public class BeatLeaderRecorder : ITickable, IInitializable, IDisposable
     public void Dispose()
     {
         _recorder?.OnFinalizeReplay -= OnFinalizeReplay;
+        _eyeDataManager.OnRealtimeProviderChanged -= OnRealtimeDataProviderChanged;
     }
 
     private float _lastRecordedTime = 0;
@@ -55,10 +65,12 @@ public class BeatLeaderRecorder : ITickable, IInitializable, IDisposable
             return;
         if(_audioTimeSyncController.state != AudioTimeSyncController.State.Playing)
             return;
+        if(_realtimeEyeDataProvider == null)
+            return;
         // 30fps is enough. 24fps is good. 6fps is debug friendly.
         if(_audioTimeSyncController.songTime - _lastRecordedTime < 1.0 / 6)
             return;
-        if (_eyeDataProvider!.GetData(out EyeTrackingData eyeTrackingData))
+        if (_realtimeEyeDataProvider.GetData(out EyeTrackingData eyeTrackingData))
         {
             _lastRecordedTime = _audioTimeSyncController.songTime;
             _records.Add(new  RecordedEyeTrackingData()
@@ -69,6 +81,7 @@ public class BeatLeaderRecorder : ITickable, IInitializable, IDisposable
         }
     }
 
+    
     private void OnFinalizeReplay()
     {
         if(!_recordEnabled)

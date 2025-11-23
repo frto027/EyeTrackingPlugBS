@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using EyeTrackingPlug.DataProvider;
 using IPA;
 using IPA.Loader;
 using SiraUtil.Zenject;
@@ -22,7 +23,7 @@ internal class Plugin
         Log = ipaLogger;
         
         BeatLeaderEnabled = PluginManager.IsEnabled(PluginManager.GetPluginFromId("BeatLeader"));
-        OpenXRRestarter.Instance.onAfterShutdown += EyeGazeEnabler;
+        UnityEyeDataProvider.PluginInit();
         // Do not restart OpenXR immediately. I don't want to be too aggressive, even with the default 5-second delay before restarting.
         // If other mods also require a restart, then why not do them together later?
         
@@ -37,26 +38,10 @@ internal class Plugin
         Log.Info($"{pluginMetadata.Name} {pluginMetadata.HVersion} initialized, etAgent: {EtAgent}");
     }
 
-    private static void EyeGazeEnabler()
-    {
-        var profile = OpenXRSettings.Instance.features.First((f => f is EyeGazeInteraction));
-        profile.enabled = true;
-    }
     
     [OnStart]
     public void OnApplicationStart()
     {
-        Log.Debug("OnApplicationStart");
-
-        if (OpenXRSettings.Instance.features.First((f => f is EyeGazeInteraction)).enabled ||
-            OpenXRRestarter.Instance.isRunning)
-        {
-            // Lucky. If other mods or something did/doing the OpenXR restart, we don't need do it.
-        }
-        else
-        {
-            OpenXRRestarter.Instance.PauseAndShutdownAndRestart();
-        }
     }
     [OnExit]
     public void OnApplicationExit()
