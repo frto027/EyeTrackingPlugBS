@@ -63,14 +63,9 @@ In the future the event maybe reloaded with different arguments.
 class YourClass 
 {
     [Inject]
-    private readonly IEyeDataProvider _dataProvider;
-    
-    [Inject]
-    private readonly ReplayOrRawEyeDataProvider _replayOrRawEyeDataProvider;
+    private readonly EyeDataManager _eyeDataManager;
 }
 ```
 
-`IEyeDataProvider` returns the raw data from the player selected data source.
-
-`ReplayOrRawEyeDataProvider` will return replay data if current is in replay mode. Or returns raw data if not in replay.
+or just use `EyeDataManager.Instance`.
 

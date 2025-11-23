@@ -6,14 +6,22 @@ namespace EyeTrackingPlug;
 
 public class EyeDataManager : IInitializable
 {
-    private IEyeDataProvider _realtimeProvider = null!;
+    public static EyeDataManager Instance = null!;
+    /// <summary>
+    /// This provider provides the realtime data from some hardware.
+    /// </summary>
     public IEyeDataProvider RealtimeProvider => _realtimeProvider;
     public event Action<IEyeDataProvider>? OnRealtimeProviderChanged; 
     
-    private ReplayOrRealtimeEyeDataProvider _replayOrRealtimeEyeDataProvider = null!;
+    /// <summary>
+    /// This provider provides the replay data when the game in replay mode.
+    /// Or provides the realtime data in other cases.
+    /// </summary>
     public ReplayOrRealtimeEyeDataProvider ReplayOrRealtimeEyeDataProvider => _replayOrRealtimeEyeDataProvider;
 
-    public static EyeDataManager Instance = null!;
+    private IEyeDataProvider _realtimeProvider = null!;
+    private ReplayOrRealtimeEyeDataProvider _replayOrRealtimeEyeDataProvider = null!;
+    
 
     public void Initialize()
     {
