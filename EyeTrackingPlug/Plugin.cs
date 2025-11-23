@@ -2,6 +2,7 @@
 using EyeTrackingPlug.DataProvider;
 using IPA;
 using IPA.Loader;
+using JetBrains.Annotations;
 using SiraUtil.Zenject;
 using UnityEngine.XR.OpenXR;
 using UnityEngine.XR.OpenXR.Features.Interactions;
@@ -10,6 +11,7 @@ using IpaLogger = IPA.Logging.Logger;
 namespace EyeTrackingPlug;
 
 [Plugin(RuntimeOptions.SingleStartInit)]
+[UsedImplicitly]
 internal class Plugin
 {
     internal static IpaLogger Log { get; private set; } = null!;

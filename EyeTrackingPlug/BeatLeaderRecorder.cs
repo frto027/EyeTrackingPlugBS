@@ -5,6 +5,7 @@ using System.Text;
 using BeatLeader;
 using EyeTrackingPlug.DataProvider;
 using IPA.Loader;
+using JetBrains.Annotations;
 using SiraUtil.Zenject;
 using Zenject;
 
@@ -15,7 +16,7 @@ public struct RecordedEyeTrackingData
     public float SongTime;
     public EyeTrackingData EyeTrackingData;
 }
-
+[UsedImplicitly]
 public class BeatLeaderRecorder : ITickable, IInitializable, IDisposable
 {
     [InjectOptional]

@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using EyeTrackingPlug.DataProvider;
+using JetBrains.Annotations;
 using Zenject;
     
 namespace EyeTrackingPlug;
 
+[UsedImplicitly]
 public class EyeDataManager : IInitializable
 {
     public static EyeDataManager Instance = null!;
@@ -30,6 +33,7 @@ public class EyeDataManager : IInitializable
         _replayOrRealtimeEyeDataProvider = new ReplayOrRealtimeEyeDataProvider(this);
     }
 
+    [SuppressMessage("ReSharper", "MemberCanBePrivate.Global")]
     public void ReplaceRealtimeEyeDataProvider(IEyeDataProvider obj)
     {
         (obj as IInitializable)?.Initialize();
