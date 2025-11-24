@@ -121,7 +121,10 @@ public class BeatLeaderReplayDataProvider:IEyeDataProvider, IInitializable, IDis
     }
 
     private int currIndex = 0;
-    public bool GetData(out EyeTrackingData data)
+    public bool GetData(out EyeTrackingData data){
+        return GetData(data, true);
+    }
+    public bool GetData(out EyeTrackingData data, bool smooth)
     {
         data = new EyeTrackingData();
         if (_datas == null)
@@ -131,6 +134,21 @@ public class BeatLeaderReplayDataProvider:IEyeDataProvider, IInitializable, IDis
             return false;
         
         var now = _audioTimeSyncController.songTime;
+
+        var assign_data = () => {
+            if (smooth && currIndex + 1 < _datas.Length) {
+                float timeDelta = _datas[currIndex+1].SongTime - _datas[currIndex].SongTime;
+                if (timeDelta > 0.001) {
+                    float lerp_rate = (now - _datas[currIndex].SongTime) / timeDelta;
+                    data.LeftPosition = Vector3.Lerp(_datas[currIndex].LeftPosition, _datas[currIndex+1].LeftPosition,lerp_rate);
+                    data.RightPosition = Vector3.Lerp(_datas[currIndex].RightPosition, _datas[currIndex+1].RightPosition,lerp_rate);
+                    data.LeftRotation =  Quaternion.Lerp(_datas[currIndex].LeftRotation, _datas[currIndex+1].LeftRotation,lerp_rate);
+                    data.RightRotation = Quaternion.Lerp(_datas[currIndex].RightRotation, _datas[currIndex+1].RightRotation,lerp_rate);
+                    return;
+                }
+            }
+            data = _datas[currIndex].EyeTrackingData;
+        };
         
         if (_datas[0].SongTime > now)
             return false;
@@ -154,7 +172,7 @@ public class BeatLeaderReplayDataProvider:IEyeDataProvider, IInitializable, IDis
         if (currIndex + 1 < _datas.Length && isInSongTime(currIndex + 1))
         {
             currIndex++;
-            data = _datas[currIndex].EyeTrackingData;
+            assign_data();
             return true;
         }
 
@@ -163,7 +181,7 @@ public class BeatLeaderReplayDataProvider:IEyeDataProvider, IInitializable, IDis
             if (isInSongTime(i))
             {
                 currIndex = i;
-                data = _datas[currIndex].EyeTrackingData;
+                assign_data();
                 return true;
             }
         }
