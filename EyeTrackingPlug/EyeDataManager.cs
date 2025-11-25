@@ -40,6 +40,6 @@ public class EyeDataManager : IInitializable
         var old = _realtimeProvider;
         _realtimeProvider = newProvider;
         OnRealtimeProviderChanged?.Invoke(newProvider);
-        (newProvider as IDisposable)?.Dispose();
+        (old as IDisposable)?.Dispose();
     }
 }
