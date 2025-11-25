@@ -13,6 +13,8 @@ jobs:
     - uses: actions/checkout@v4
     - name: Initialize modding environment
       uses: beat-forge/init-beatsaber@v1
+      with:
+        version: 1.40.8
     - name: Biild
       id: Build
       run: dotnet build --configuration Release
