@@ -20,6 +20,8 @@ Maybe it will not work. Just an idea fram the unreleased steam frame. Let's code
 - [ ] Release the quest mod.
 
 
+- [ ] Work with [OpenXR Feature Manager](https://beatmods.com/mods/314).
+
 ## Pickup a mod name
 
 - [ ] EyeTrackingPlug
