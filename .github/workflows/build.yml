@@ -1,0 +1,23 @@
+name: Build
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Initialize modding environment
+      uses: beat-forge/init-beatsaber@v1
+    - name: Biild
+      id: Build
+      run: dotnet build --configuration Release
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v4
+      with:
+          name: ${{ steps.Build.outputs.filename }}
+          path: ${{ steps.Build.outputs.artifactpath }}
