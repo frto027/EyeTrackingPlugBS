@@ -34,12 +34,12 @@ public class EyeDataManager : IInitializable
     }
 
     [SuppressMessage("ReSharper", "MemberCanBePrivate.Global")]
-    public void ReplaceRealtimeEyeDataProvider(IEyeDataProvider obj)
+    public void ReplaceRealtimeEyeDataProvider(IEyeDataProvider newProvider)
     {
-        (obj as IInitializable)?.Initialize();
+        (newProvider as IInitializable)?.Initialize();
         var old = _realtimeProvider;
-        _realtimeProvider = obj;
-        OnRealtimeProviderChanged?.Invoke(obj);
-        (old as IDisposable)?.Dispose();
+        _realtimeProvider = newProvider;
+        OnRealtimeProviderChanged?.Invoke(newProvider);
+        (newProvider as IDisposable)?.Dispose();
     }
 }
