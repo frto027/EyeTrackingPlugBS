@@ -9,7 +9,7 @@ namespace EyeTrackingPlug;
 [UsedImplicitly]
 public class EyeDataManager
 {
-    public static EyeDataManager Instance = null!;
+    public static EyeDataManager Instance { get; internal set; } = null!;
     /// <summary>
     /// This provider provides the realtime data from some hardware.
     /// </summary>
@@ -27,7 +27,6 @@ public class EyeDataManager
     
     internal EyeDataManager()
     {
-        Instance = this;
         ReplaceRealtimeEyeDataProvider(new UnityEyeDataProvider());
         _replayOrRealtimeEyeDataProvider = new ReplayOrRealtimeEyeDataProvider(this);
     }

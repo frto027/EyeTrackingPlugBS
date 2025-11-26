@@ -51,9 +51,6 @@ public class BeatLeaderReplayDataProvider:IEyeDataProvider, IInitializable, IDis
     
     [Inject]
     private AudioTimeSyncController _audioTimeSyncController = null!;
-
-    [Inject]
-    private readonly EyeDataManager _eyeDataManager = null!;
     
     
     private ReplayData[]? _datas;
@@ -212,13 +209,13 @@ public class BeatLeaderReplayDataProvider:IEyeDataProvider, IInitializable, IDis
     public void Initialize()
     {
         LoadData();
-        _eyeDataManager.ReplayOrRealtimeEyeDataProvider.blReplayProvider = this;
+        EyeDataManager.Instance.ReplayOrRealtimeEyeDataProvider.BLReplayProvider = this;
         _instance = this;
     }
 
     public void Dispose()
     {
-        _eyeDataManager.ReplayOrRealtimeEyeDataProvider.blReplayProvider = null;
+        EyeDataManager.Instance.ReplayOrRealtimeEyeDataProvider.BLReplayProvider = null;
         _instance = null;
     }
 }

@@ -21,9 +21,6 @@ public class BeatLeaderRecorder : ITickable, IInitializable, IDisposable
 {
     [InjectOptional]
     private readonly ReplayRecorder? _recorder = null!;
-
-    [Inject] 
-    private readonly EyeDataManager _eyeDataManager = null!;
     
     private IEyeDataProvider? _realtimeEyeDataProvider;
     
@@ -44,8 +41,8 @@ public class BeatLeaderRecorder : ITickable, IInitializable, IDisposable
         // The beatleader will not install the recorder if beatleader or scoresaber is in replay mode.
         _recordEnabled = _recorder != null;
 
-        _realtimeEyeDataProvider = _eyeDataManager.RealtimeProvider;
-        _eyeDataManager.OnRealtimeProviderChanged += OnRealtimeDataProviderChanged;
+        _realtimeEyeDataProvider = EyeDataManager.Instance.RealtimeProvider;
+        EyeDataManager.Instance.OnRealtimeProviderChanged += OnRealtimeDataProviderChanged;
         
         _recorder?.OnFinalizeReplay += OnFinalizeReplay;
         
@@ -56,7 +53,7 @@ public class BeatLeaderRecorder : ITickable, IInitializable, IDisposable
     public void Dispose()
     {
         _recorder?.OnFinalizeReplay -= OnFinalizeReplay;
-        _eyeDataManager.OnRealtimeProviderChanged -= OnRealtimeDataProviderChanged;
+        EyeDataManager.Instance.OnRealtimeProviderChanged -= OnRealtimeDataProviderChanged;
     }
 
     private float _lastRecordedTime = 0;

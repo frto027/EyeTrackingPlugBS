@@ -7,9 +7,9 @@ namespace EyeTrackingPlug.DataProvider;
 public class ReplayOrRealtimeEyeDataProvider: IEyeDataProvider
 {
     
-    private IEyeDataProvider _eyeDataProvider = null!;
+    private IEyeDataProvider _eyeDataProvider;
 
-    internal BeatLeaderReplayDataProvider? blReplayProvider = null;
+    internal BeatLeaderReplayDataProvider? BLReplayProvider = null;
 
     public ReplayOrRealtimeEyeDataProvider(EyeDataManager manager)
     {
@@ -18,11 +18,11 @@ public class ReplayOrRealtimeEyeDataProvider: IEyeDataProvider
     }
     
     [PublicAPI]
-    public bool IsReplayData => blReplayProvider != null && blReplayProvider.HasData();
+    public bool IsReplayData => BLReplayProvider != null && BLReplayProvider.HasData();
     public bool GetData(out EyeTrackingData data)
     {
-        if(blReplayProvider != null && blReplayProvider.HasData())
-            return blReplayProvider.GetData(out data);
+        if(BLReplayProvider != null && BLReplayProvider.HasData())
+            return BLReplayProvider.GetData(out data);
         return _eyeDataProvider.GetData(out data);
     }
 }
