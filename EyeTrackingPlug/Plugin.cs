@@ -25,14 +25,13 @@ internal class Plugin
         Log = ipaLogger;
         
         BeatLeaderEnabled = PluginManager.IsEnabled(PluginManager.GetPluginFromId("BeatLeader"));
-        UnityEyeDataProvider.PluginInit();
-        // Do not restart OpenXR immediately. I don't want to be too aggressive, even with the default 5-second delay before restarting.
-        // If other mods also require a restart, then why not do them together later?
         
+        OpenXRFeatureManager.FeatureManager.instance.afterOpenXRUnloaded +=
+            ()=>OpenXRSettings.Instance.features.First((f => f is EyeGazeInteraction)).enabled = true;
+        
+        EyeDataManager.Instance = new EyeDataManager();
         
         zenjector.UseLogger(ipaLogger);
-        
-        zenjector.Install<AppInstaller>(Location.App);
         zenjector.Install<SinglePlayerInstaller>(Location.Singleplayer);
         
         EtAgent = $"{pluginMetadata.Name}/{pluginMetadata.HVersion} ({OpenXRRuntime.LibraryName},{OpenXRRuntime.name}/{OpenXRRuntime.version}/{OpenXRRuntime.apiVersion}/{OpenXRRuntime.pluginVersion})";

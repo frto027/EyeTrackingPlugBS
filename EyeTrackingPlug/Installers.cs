@@ -1,18 +1,12 @@
 ﻿using System;
 using EyeTrackingPlug.DataProvider;
 using IPA.Loader;
+using JetBrains.Annotations;
 using Zenject;
 
 namespace EyeTrackingPlug;
 
-public class AppInstaller : Installer<AppInstaller>
-{
-    public override void InstallBindings()
-    {
-        Container.BindInterfacesAndSelfTo<EyeDataManager>().AsSingle();
-    }
-}
-
+[UsedImplicitly]
 public class SinglePlayerInstaller : Installer<SinglePlayerInstaller>
 {
     public override void InstallBindings()

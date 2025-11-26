@@ -21,7 +21,7 @@ Maybe it will not work. Just an idea fram the unreleased steam frame. Let's code
 
 
 Some dev related note
-- [ ] Work with [OpenXR Feature Manager](https://beatmods.com/mods/314).
+- [x] Work with [OpenXR Feature Manager](https://beatmods.com/mods/314).
 - [ ] Pickup a proper fps for record file.
 
 ## Pickup a mod name
@@ -55,21 +55,7 @@ count                   - int
 etAgent                 - string(length + bytes), the mod ID and version number information
 ```
 
-Always skip `eventArgSize` bytes, even if it is something like `leftEyeClose` which have no args defined.
-
-if you see unknown event Id, just ignore them and skip the `args`.
-
-In the future the event maybe reloaded with different arguments.
-
 # API
 
-```csharp
-class YourClass 
-{
-    [Inject]
-    private readonly EyeDataManager _eyeDataManager;
-}
-```
-
-or just use `EyeDataManager.Instance`.
+Use `EyeDataManager.Instance`.
 

@@ -12,31 +12,6 @@ namespace EyeTrackingPlug.DataProvider;
 
 public class UnityEyeDataProvider: IEyeDataProvider, IInitializable, IDisposable
 {
-    public static void PluginInit()
-    {
-        OpenXRRestarter.Instance.onAfterShutdown += EyeGazeEnabler;
-    }
-
-    public static void RestartOpenXRIfNeeded()
-    {
-        if (OpenXRSettings.Instance.features.First((f => f is EyeGazeInteraction)).enabled ||
-            OpenXRRestarter.Instance.isRunning)
-        {
-            // Lucky. If other mods or something did/doing the OpenXR restart, we don't need do it.
-        }
-        else
-        {
-            OpenXRRestarter.Instance.PauseAndShutdownAndRestart();
-        }
-
-    }
-    private static void EyeGazeEnabler()
-    {
-        var profile = OpenXRSettings.Instance.features.First((f => f is EyeGazeInteraction));
-        profile.enabled = true;
-    }
-
-    
     private List<InputDevice> _devices = new List<InputDevice>();
     
     private void FlushDev()
@@ -51,7 +26,6 @@ public class UnityEyeDataProvider: IEyeDataProvider, IInitializable, IDisposable
     
     public void Initialize()
     {
-        RestartOpenXRIfNeeded();
         FlushDev();
         InputDevices.deviceConfigChanged +=FlushDev;
         InputDevices.deviceConnected += FlushDev;

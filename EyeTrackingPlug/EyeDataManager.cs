@@ -7,7 +7,7 @@ using Zenject;
 namespace EyeTrackingPlug;
 
 [UsedImplicitly]
-public class EyeDataManager : IInitializable
+public class EyeDataManager
 {
     public static EyeDataManager Instance = null!;
     /// <summary>
@@ -25,8 +25,7 @@ public class EyeDataManager : IInitializable
     private IEyeDataProvider _realtimeProvider = null!;
     private ReplayOrRealtimeEyeDataProvider _replayOrRealtimeEyeDataProvider = null!;
     
-
-    public void Initialize()
+    internal EyeDataManager()
     {
         Instance = this;
         ReplaceRealtimeEyeDataProvider(new UnityEyeDataProvider());
