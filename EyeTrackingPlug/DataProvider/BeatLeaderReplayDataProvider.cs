@@ -122,7 +122,7 @@ public class BeatLeaderReplayDataProvider:IEyeDataProvider, IInitializable, IDis
 
     private int currIndex = 0;
     public bool GetData(out EyeTrackingData data){
-        return GetData(data, true);
+        return GetData(out data, true);
     }
     public bool GetData(out EyeTrackingData data, bool smooth)
     {
@@ -135,55 +135,75 @@ public class BeatLeaderReplayDataProvider:IEyeDataProvider, IInitializable, IDis
         
         var now = _audioTimeSyncController.songTime;
 
-        var assign_data = () => {
-            if (smooth && currIndex + 1 < _datas.Length) {
-                float timeDelta = _datas[currIndex+1].SongTime - _datas[currIndex].SongTime;
-                if (timeDelta > 0.001) {
-                    float lerp_rate = (now - _datas[currIndex].SongTime) / timeDelta;
-                    data.LeftPosition = Vector3.Lerp(_datas[currIndex].LeftPosition, _datas[currIndex+1].LeftPosition,lerp_rate);
-                    data.RightPosition = Vector3.Lerp(_datas[currIndex].RightPosition, _datas[currIndex+1].RightPosition,lerp_rate);
-                    data.LeftRotation =  Quaternion.Lerp(_datas[currIndex].LeftRotation, _datas[currIndex+1].LeftRotation,lerp_rate);
-                    data.RightRotation = Quaternion.Lerp(_datas[currIndex].RightRotation, _datas[currIndex+1].RightRotation,lerp_rate);
+        void AssignData(ref EyeTrackingData data)
+        {
+            if (smooth && currIndex + 1 < _datas.Length)
+            {
+                var timeDelta = _datas[currIndex + 1].SongTime - _datas[currIndex].SongTime;
+                if (timeDelta > 0.001)
+                {
+                    var lerpRate = (now - _datas[currIndex].SongTime) / timeDelta;
+                    data.LeftPosition = 
+                        Vector3.Lerp(_datas[currIndex].EyeTrackingData.LeftPosition, 
+                            _datas[currIndex + 1].EyeTrackingData.LeftPosition, lerpRate);
+                    data.RightPosition =
+                        Vector3.Lerp(_datas[currIndex].EyeTrackingData.RightPosition, 
+                            _datas[currIndex + 1].EyeTrackingData.RightPosition, lerpRate);
+                    data.LeftRotation = 
+                        Quaternion.Lerp(_datas[currIndex].EyeTrackingData.LeftRotation,
+                            _datas[currIndex + 1].EyeTrackingData.LeftRotation, lerpRate);
+                    data.RightRotation = 
+                        Quaternion.Lerp(_datas[currIndex].EyeTrackingData.RightRotation, 
+                            _datas[currIndex + 1].EyeTrackingData.RightRotation, lerpRate);
                     return;
                 }
             }
+
             data = _datas[currIndex].EyeTrackingData;
-        };
-        
+        }
+
         if (_datas[0].SongTime > now)
             return false;
-        var isInSongTime = (int index) =>
+
+        bool IsInSongTime(int index)
         {
             if (index >= _datas.Length) return false;
             if (index < 0) return false;
-            if(_datas[index].SongTime > now) return false;
+            if (_datas[index].SongTime > now) return false;
             if (index + 1 < _datas.Length)
             {
-                if(_datas[index+1].SongTime <= now) 
-                    return false;
+                if (_datas[index + 1].SongTime <= now) return false;
                 return true;
             }
             else
                 return true;
-        };
+        }
 
-        if (isInSongTime(currIndex))
-            return false;
-        if (currIndex + 1 < _datas.Length && isInSongTime(currIndex + 1))
+        if (IsInSongTime(currIndex))
+        {
+            if (smooth)
+            {
+                AssignData(ref data);
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        if (currIndex + 1 < _datas.Length && IsInSongTime(currIndex + 1))
         {
             currIndex++;
-            assign_data();
+            AssignData(ref data);
             return true;
         }
 
-        for (int i = 0; i < _datas.Length; i++)
+        for (var i = 0; i < _datas.Length; i++)
         {
-            if (isInSongTime(i))
-            {
-                currIndex = i;
-                assign_data();
-                return true;
-            }
+            if (!IsInSongTime(i)) continue;
+            currIndex = i;
+            AssignData(ref data);
+            return true;
         }
 
         return false;
